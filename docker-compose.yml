@@ -1,0 +1,31 @@
+services:
+  web-app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./web-app:/web-app
+    
+    environment:
+      - DB_HOST=database
+      - DB_NAME=dbname
+      - DB_USER=dbuser
+      - DB_PASS=dbpass
+    
+    command:
+      uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+
+
+    depends_on:
+      - database
+
+  database:
+    image: postgres:14.10-alpine
+    environment:
+      - POSTGRES_DB=dbname
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=dbpass
+    #volumes:
+      #- ./init.sql:/docker-entrypoint-initdb.d/init.sql
