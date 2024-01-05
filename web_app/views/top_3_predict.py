@@ -1,15 +1,11 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 import sys
-
+from models.database import SessionLocal
 sys.path.append('../')
 from models.models import Product 
 import random
 
 def get_top_3():
-    engine = create_engine('postgresql://dbuser:dbpass@database/dbname')
-    Session = sessionmaker(bind=engine)
-    session = Session()
+    session = SessionLocal()
 
     ids = session.query(Product.id).all()
 

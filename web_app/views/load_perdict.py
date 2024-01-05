@@ -3,7 +3,7 @@ from models.schemes import Item
 
 from models.models import Product
 
-from controllers.top_3_predict import get_top_3
+from views.top_3_predict import get_top_3
 
 def get_items(db: Session, skip: int = 0, limit: int = 100):
     products = db.query(Product).filter(Product.id.in_(get_top_3())).all()

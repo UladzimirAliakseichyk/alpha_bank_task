@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from models.database import get_db
-from controllers.load_perdict import get_items
+from views.load_perdict import get_items
 from models.schemes import Item
 router = APIRouter()
 
