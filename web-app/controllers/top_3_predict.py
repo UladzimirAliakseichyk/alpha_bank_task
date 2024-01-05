@@ -4,8 +4,9 @@ import sys
 
 sys.path.append('../')
 from models.models import Product 
+import random
 
-def get_all_id():
+def get_top_3():
     engine = create_engine('postgresql://dbuser:dbpass@database/dbname')
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -14,7 +15,11 @@ def get_all_id():
 
     all_id_lst = [int(id[0]) for id in ids]
 
-    return all_id_lst
+    top_3_prods = random.sample(all_id_lst,3)
+
+    return top_3_prods
+
+
 
 if __name__ == '__main__':
-    get_all_id()
+    print(get_top_3())
