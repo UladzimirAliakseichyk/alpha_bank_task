@@ -24,6 +24,7 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
+    username: str
     password: str
 
 
@@ -34,3 +35,7 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
+
+
+class UserRead(UserBase):
+    username: str

@@ -3,5 +3,6 @@ uvicorn
 sqlalchemy 
 psycopg2-binary 
 alembic
-asyncpg
-fastapi-users[sqlalchemy]
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
