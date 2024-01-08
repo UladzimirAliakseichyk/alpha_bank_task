@@ -1,12 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from routers.predict import router as predict_router
-
-from fastapi_users import FastAPIUsers
-from models.models import User
-from models.schemes import UserCreate, UserRead
-from auth.manager import get_user_manager
-from auth.auth import auth_backend
-
+from auth.auth import router as register_router
+from starlette import status
+from auth.auth import db_dependency, get_current_user
+from typing import Annotated
 
 app = FastAPI()
 
@@ -15,14 +12,15 @@ app.include_router(
     prefix = '/predict',
 )
 
-
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
-
 app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
-    tags=["auth"],
+    router = register_router,
+    prefix = '/token'
 )
+user_depencency = Annotated[dict, Depends(get_current_user)]
+
+@app.get('/', status_code=status.HTTP_200_OK)
+async def user(user: user_depencency):
+    print(user)
+    if user is None:
+        raise HTTPException(status_code=401, detail='Authentication Faild')
+    return {'User': user}

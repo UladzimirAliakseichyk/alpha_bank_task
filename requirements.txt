@@ -6,3 +6,5 @@ alembic
 python-jose[cryptography]
 passlib[bcrypt]
 python-multipart
+pytz
+bcrypt==4.0.1
