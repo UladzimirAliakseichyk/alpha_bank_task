@@ -8,13 +8,13 @@ def get_top_3():
     session = SessionLocal()
 
     ids = session.query(Product.id).all()
-
     all_id_lst = [int(id[0]) for id in ids]
+    if len(all_id_lst) >= 3:
+        top_3_prods = random.sample(all_id_lst,3)
 
-    top_3_prods = random.sample(all_id_lst,3)
-
-    return top_3_prods
-
+        return top_3_prods
+    else:
+        return None
 
 
 if __name__ == '__main__':

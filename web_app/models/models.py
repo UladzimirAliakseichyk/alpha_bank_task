@@ -5,7 +5,7 @@ Base = declarative_base()
 
 
 class Product(Base):
-    __tablename__ = "products"
+    __tablename__ = "product"
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
@@ -13,10 +13,9 @@ class Product(Base):
     price = Column(Float)
 
 
-class Client(Base):
-    __tablename__ = "clients"
+class User(Base):
+    __tablename__ = "user"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    phone = Column(String, index=True)
-    email = Column(String, index=True)
+    username = Column(String, index=True)
+    hashed_password = Column(String, index=True)
