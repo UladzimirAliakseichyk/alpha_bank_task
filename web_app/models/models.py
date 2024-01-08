@@ -21,3 +21,4 @@ class User(Base):
     username = Column(String, index=True)
     hashed_password = Column(String, index=True)
     registred_at = Column(TIMESTAMP, default=datetime.utcnow)
+    user_predict = Column(String, default=None)

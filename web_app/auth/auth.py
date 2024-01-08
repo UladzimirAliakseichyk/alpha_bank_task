@@ -20,7 +20,7 @@ SECRET_KEY = 'SECRET_KEY'
 ALGORITHM = 'HS256'
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl='token/auth/token')
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
 
 class CreateUserRequest(BaseModel):
     username: str
@@ -32,8 +32,8 @@ class Token(BaseModel):
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-@router.post('/', status_code=status.HTTP_201_CREATED)
-async def create_user(db:db_dependency,
+@router.post("/", status_code=status.HTTP_201_CREATED)
+async def create_user(db: db_dependency,
                       create_user_request: CreateUserRequest):
     create_user_model = User(
         username = create_user_request.username,
@@ -52,7 +52,7 @@ async def login_for_access_token(from_data: Annotated[OAuth2PasswordRequestForm,
                             detail='Could not validate user')
     token = create_access_token(user.username, user.id, timedelta(minutes=60))
 
-    return {'access_token': token, 'token_type': 'Baerer'}
+    return {'access_token': token, 'token_type': 'bearer'}
 
 
 def authenticate_user(username: str, password: str, db):
