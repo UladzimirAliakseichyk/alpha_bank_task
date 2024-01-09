@@ -66,22 +66,33 @@ def read_config_file():
         return False
 
 
+def make_migrations():
+    try:
+        rev_commant = 'alembic revision --autogenerate -m "Initial migration"'
+        migration_command = 'alembic upgrade head'
+        subprocess.run(rev_commant, shell=True)
+        subprocess.run(migration_command, shell=True)
+        return True
+    except:
+        return False
+    
+
 def check_db():
-    rev_commant = 'alembic revision --autogenerate -m "Initial migration"'
-    migration_command = 'alembic upgrade head'
-    subprocess.run(rev_commant, shell=True)
-    subprocess.run(migration_command, shell=True)
     is_db_updated = read_config_file()
     if is_db_updated == False:
-        add_test_user()
-        add_products()
-        config = configparser.ConfigParser()
-        config.read('is_updated.ini')        
-        config.set('DEFAULT', 'is_updated', 'True')
-        with open('is_updated.ini', 'w') as configfile:
-            config.write(configfile)
-    if is_db_updated == True:
-        pass
+        mk_migr = make_migrations()
+        if mk_migr == True:
+            add_test_user()
+            add_products()
+            config = configparser.ConfigParser()
+            config.read('is_updated.ini')        
+            config.set('DEFAULT', 'is_updated', 'True')
+            with open('prep/is_updated.ini', 'w') as configfile:
+                config.write(configfile)
+        if is_db_updated == True:
+            pass
+        else:
+            print("MIGRATIONS ERROR")
 
 
 if __name__ == '__main__':
