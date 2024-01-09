@@ -4,7 +4,6 @@ from models.database import get_db
 from views.load_predict import get_items
 from models.schemes import Item
 from auth.auth import get_current_user
-from typing import Annotated
 
 router = APIRouter()
 
@@ -12,6 +11,7 @@ router = APIRouter()
 async def predict_items(skip: int = 0, limit: int = 3, 
                         db: Session = Depends(get_db), 
                         user: dict = Depends(get_current_user)):
+
     if user is None:
         raise HTTPException(status_code=401, detail='Authentication Failed')
     user_id = user['id']

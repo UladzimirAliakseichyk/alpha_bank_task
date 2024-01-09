@@ -2,12 +2,10 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from routers.predict import router as predict_router
 from auth.auth import router as auth_router
 from starlette import status
-from prep.add_prods_and_test_user import check_db
 from auth.auth import get_current_user
 from typing import Annotated
 
 app = FastAPI()
-check_db()
 
 app.include_router(
     router = predict_router,

@@ -15,7 +15,8 @@ services:
       - SECRET_KEY=SECRET_KEY
     
     command:
-      uvicorn main:app --reload --host 0.0.0.0 --port 8000
+      sh -c "python3 prep/add_prods_and_test_user.py && uvicorn main:app --reload --host 0.0.0.0 --port 8000"
+
 
 
 

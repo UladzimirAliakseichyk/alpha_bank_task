@@ -9,6 +9,9 @@ sys.path.append(parent_dir)
 from models.database import SessionLocal
 from models.models import Product
 from models.models import User
+import subprocess
+import configparser
+
 
 def add_products():
     params = [
@@ -52,20 +55,32 @@ def add_test_user():
     session.close()
     print('test_user added')
 
-def check_db():
-    is_db_updated = os.getenv('IS_DB_UPDATED')
-    if is_db_updated == 'False':
-        session = SessionLocal()
-        existing_user = session.query(User).filter_by(username='test_user').first()
-        if existing_user:
-            os.environ['IS_DB_UPDATED'] = 'True'
-    
-        else:
-            add_test_user()
-            add_products()
-            os.environ['IS_DB_UPDATED'] = 'True'
 
-    if is_db_updated == 'True':
+def read_config_file():
+    config = configparser.ConfigParser()
+    config.read('is_updated.ini')
+    if config.has_option('DEFAULT', 'is_updated'):
+        is_updated_value = config.getboolean('DEFAULT', 'is_updated')
+        return is_updated_value
+    else:
+        return False
+
+
+def check_db():
+    rev_commant = 'alembic revision --autogenerate -m "Initial migration"'
+    migration_command = 'alembic upgrade head'
+    subprocess.run(rev_commant, shell=True)
+    subprocess.run(migration_command, shell=True)
+    is_db_updated = read_config_file()
+    if is_db_updated == False:
+        add_test_user()
+        add_products()
+        config = configparser.ConfigParser()
+        config.read('is_updated.ini')        
+        config.set('DEFAULT', 'is_updated', 'True')
+        with open('is_updated.ini', 'w') as configfile:
+            config.write(configfile)
+    if is_db_updated == True:
         pass
 
 
