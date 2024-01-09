@@ -6,6 +6,7 @@ RUN apk update && apk add postgresql postgresql-contrib
 
 WORKDIR /web_app
 RUN pip install -r temp/requirements.txt
+ENV IS_DB_UPDATED=False
 EXPOSE 8000
 
 RUN adduser --disabled-password app-user
