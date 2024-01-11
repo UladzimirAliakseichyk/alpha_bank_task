@@ -10,7 +10,7 @@ from models.database import SessionLocal
 from models.models import Product
 from models.models import User
 import subprocess
-import configparser
+from pathlib import Path
 
 
 def add_products():
@@ -34,9 +34,7 @@ def add_products():
         product = Product(title=param['title'], description=param['description'], price=param['price'])
         session.add(product)
 
-
     session.commit()
-
     session.close()
     print('items added')
 
@@ -57,13 +55,16 @@ def add_test_user():
 
 
 def read_config_file():
-    config = configparser.ConfigParser()
-    config.read('is_updated.ini')
-    if config.has_option('DEFAULT', 'is_updated'):
-        is_updated_value = config.getboolean('DEFAULT', 'is_updated')
-        return is_updated_value
-    else:
-        return False
+    ini_file_path = Path.cwd()/'prep'/'is_updated.ini'
+    print(ini_file_path)
+    with open(ini_file_path, 'r') as config_file:
+        config_file = config_file.readline()
+        print(config_file)
+    if 'False' in config_file:
+        with open(ini_file_path, 'w') as config_file:
+            config_file.write('is_updated = True')
+            return False
+    return True
 
 
 def make_migrations():
@@ -72,6 +73,7 @@ def make_migrations():
         migration_command = 'alembic upgrade head'
         subprocess.run(rev_commant, shell=True)
         subprocess.run(migration_command, shell=True)
+        print('Migrations DONE')
         return True
     except:
         return False
@@ -84,16 +86,9 @@ def check_db():
         if mk_migr == True:
             add_test_user()
             add_products()
-            config = configparser.ConfigParser()
-            config.read('is_updated.ini')        
-            config.set('DEFAULT', 'is_updated', 'True')
-            with open('prep/is_updated.ini', 'w') as configfile:
-                config.write(configfile)
-        if is_db_updated == True:
-            pass
         else:
-            print("MIGRATIONS ERROR")
-
+            print('Migrations ERROR')
+        
 
 if __name__ == '__main__':
     check_db()

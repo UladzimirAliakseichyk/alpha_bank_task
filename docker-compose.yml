@@ -1,5 +1,5 @@
 services:
-  web-app:
+  web_app:
     build:
       context: .
     ports:
@@ -12,19 +12,25 @@ services:
       - DB_NAME=dbname
       - DB_USER=dbuser
       - DB_PASS=dbpass
-      - SECRET_KEY=SECRET_KEY
     
-    command:
-      sh -c "python3 prep/add_prods_and_test_user.py && uvicorn main:app --reload --host 0.0.0.0 --port 8000"
-
-
-
-
-
-
-
+    command: sh -c 'uvicorn main:app --host 0.0.0.0 --port 8000'
+  
     depends_on:
       - database
+      
+  migration:
+    build:
+      context: .
+    volumes:
+    - ./web_app:/web_app
+    command: sh -c 'sleep 5 && python3 /web_app/prep/add_prods_and_test_user.py'
+    environment:
+      - DB_HOST=database
+      - DB_NAME=dbname
+      - DB_USER=dbuser
+      - DB_PASS=dbpass
+    depends_on:
+      - web_app
 
   database:
     image: postgres:14.10-alpine
@@ -32,5 +38,5 @@ services:
       - POSTGRES_DB=dbname
       - POSTGRES_USER=dbuser
       - POSTGRES_PASSWORD=dbpass
-    #volumes:
-      #- ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      
+  
